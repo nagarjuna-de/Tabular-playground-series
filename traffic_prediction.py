@@ -1,6 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from operator import index
+import re
+from turtle import width
+import streamlit as st
+import seaborn as sns
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
 st.title('Kaggle-Project: Traffic Prediction')
 
@@ -24,9 +33,20 @@ with data:
 
  
 
-with features:
-    st.title('features_title')
-
 with insights: 
+    df = pd.read_csv('fe_modified.csv')
     st.title('Insights')
     st.text('Looking through the Data we got some intersting Insights:')
+    fig = px.histogram(df, x='congestion', nbins=100, title='Data Distrubution over congestion')
+    plt.xlabel('Congestion', fontsize=16)
+    plt.ylabel('Count', fontsize=16)
+    st.plotly_chart(fig)
+    
+    plt.figure(figsize=(14,7))
+    df1 = df.groupby(['month'], as_index=False)['congestion'].mean()
+    
+    fig = px.bar(df1, df1['month'],df1['congestion'], color='month', title='Mean congestion per month')
+    fig.update(layout_yaxis_range=[45,50])
+    #plt.title(f'Mean congestion per month', fontsize=16)
+    plt.xlabel('Month-number', fontsize=16)
+    plt.ylabel('Congestion', fontsize=16)
