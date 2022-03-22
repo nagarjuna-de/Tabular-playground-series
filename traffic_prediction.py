@@ -10,7 +10,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
-st.title('Kaggle-Project: Traffic Prediction')
+st.title('Kaggle-Project: EDA on Traffic Prediction')
 
 header = st.container()
 data = st.container()
@@ -18,7 +18,7 @@ features = st.container()
 insights = st.container()
 
 with header:
-    st.title("Exercise:")
+    st.subheader("Description:")
     st.text("For the March edition of the 2022 Tabular Playground Series you're challenged to \nforecast twelve-hours of traffic flow in a U.S. metropolis.\
             \nThe time series in this dataset are labelled with both location coordinates and\na direction of travel -- a combination of features that will test\
             \nyour skill at spatio-temporal forecasting within a highly dynamic traffic network. \nWhich model will prevail? The venerable linear regression?\
@@ -28,27 +28,34 @@ with header:
 with data:
     st.title("Our Dataset after Feature Engineering:")
     df = pd.read_csv('fe_modified.csv')
-    df = df.reindex(columns=['time','year','month','date','hour','minute','is_weekday','m_a_e_n',
+    df = df.reindex(columns=['time','year','month','date','hour','minute','is_weekday','m_a_e_n','direction',
                             'road_coord','highway_code','congestion'])
     if st.button('Show data'):
         st.dataframe(df.head(300))
-
+    
+    st.write('Description of new Categorical feature columns')
+    st.write('is_weekday =[0-Weekday, 1-Weekend]')
+    st.write('m_a_e_n is a new feature that encode hours column')
+    st.write('5-11--Morning')
+    st.write('12-16--afternoon')
+    st.write('17-21--evening')
+    st.write('22-04--night')
 
  
-
-with features:
-    st.title('features_title')
 
 with insights: 
     st.title('Insights')
     st.text('Looking through the Data we got some intersting Insights:')
     ## Distrubution of data 
-
+    st.subheader('1.The aim of this distrubution is to see which range of congestion has more datapoints')
     fig = px.histogram(df, x='congestion', nbins=100, title='Data Distrubution over congestion')
     plt.xlabel('Congestion', fontsize=16)
     plt.ylabel('Count', fontsize=16)
     st.plotly_chart(fig)
+    st.subheader('The finding was more data points lies in range of 30-70')
 
+###################################
+    st.subheader("2.Visualizing to find any month has much higher traffic congestion")
     plt.figure(figsize=(14,7))
     df1 = df.groupby(['month'], as_index=False)['congestion'].mean()
 
@@ -56,7 +63,9 @@ with insights:
     fig.update(layout_yaxis_range=[45,50])
 
     st.plotly_chart(fig)
-
+    st.subheader('It seems the traffic congestion is much more the same in all months')
+#########################################
+    st.subheader("3.To check wether weekdays and weekends have any effect on traffic congestion")
     ## traffic congestion 
     df2 = df.groupby(['is_weekday'], as_index=False)['congestion'].mean()
     fig = px.bar(df2, x=['weekday','weekend'], y=df2['congestion'], color = 'is_weekday',title='Mean congestion over weekdays and weekends' )
@@ -64,13 +73,31 @@ with insights:
 
 
     st.plotly_chart(fig)
-
+    st.subheader('It seems the traffic congestion in weekends is bit lower.')
+##############################################
     ## traffic congestion over hour
-
+    st.subheader('4.To find is there any Rush hours')
     df3 = df.groupby(['hour'], as_index=False)['congestion'].mean()
     fig = px.line(df, df3.hour, df3['congestion'], title='Patren of traffic congestion by every hour')
+    fig.update_layout(xaxis_title="Hours(0-24)", yaxis_title="Congestion(mean)")
     st.plotly_chart(fig)
+    st.subheader('There was a peak from 12-17 hours.')
 
-    ## traffic congestion by direction
+#########################################################33
+    # ## traffic congestion by direction
+    # df4 = df.copy()
+
+    # fig = px.bar(df4, df4['direction'],df4['congestion'], color='direction', title='congestion according to direction')
+    # #fig.update(layout_yaxis_range=[45,50])
+
+    # st.plotly_chart(fig)
+#####################################################
+    st.subheader('5.To check directions have any impact on Traffic congestion')
+    fig = plt.figure(figsize=(10, 4))
+
+    sns.barplot(x='direction',y='congestion', data=df)
+    plt.title('Impact of Roadway direction on congestion')
+    st.pyplot(fig)
+    st.subheader("The more traffic is in EB, NB, SB, WB")
     
 
