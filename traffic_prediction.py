@@ -44,7 +44,7 @@ with data:
 
  
 
-with insights: 
+with insight_1: 
     st.title('Insights')
     st.text('Looking through the Data we got some intersting Insights:')
     ## Distrubution of data 
@@ -82,18 +82,20 @@ with insights:
     fig = px.line(df, df3.hour, df3['congestion'], title='Patren of traffic congestion by every hour')
     fig.update_layout(xaxis_title="Hours(0-24)", yaxis_title="Congestion(mean)")
     st.plotly_chart(fig)
-    st.subheader('There was a peak from 12-17 hours.')
+    st.subheader('There was a peak during 12-17 hours.')
 
 #########################################################33
-    # ## traffic congestion by direction
-    # df4 = df.copy()
+    st.subheader("5.To check  traffic congestion during day")
+    ## traffic congestion 
+    df3 = df.groupby(['m_a_e_n'], as_index=False)['congestion'].mean()
+    fig = px.bar(df3, x=['morning','afternoon','evening','night'], y=df3['congestion'], color = 'm_a_e_n',title='Traffic Congestion for throughout the day' )
+    fig.update(layout_yaxis_range=[35,55])
+    fig.update_layout(xaxis_title="Throughout the day", yaxis_title="Congestion(mean)")
 
-    # fig = px.bar(df4, df4['direction'],df4['congestion'], color='direction', title='congestion according to direction')
-    # #fig.update(layout_yaxis_range=[45,50])
-
-    # st.plotly_chart(fig)
+    st.plotly_chart(fig)
+    st.subheader('It seems the traffic congestion during morning(05-11 hours) and night(22-04 hours) is bit low')
 #####################################################
-    st.subheader('5.To check directions have any impact on Traffic congestion')
+    st.subheader('6.To check directions have any impact on Traffic congestion')
     fig = plt.figure(figsize=(10, 4))
 
     sns.barplot(x='direction',y='congestion', data=df)
