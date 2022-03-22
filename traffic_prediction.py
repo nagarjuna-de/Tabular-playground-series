@@ -16,7 +16,8 @@ st.title('Kaggle-Project: Traffic Prediction')
 header = st.container()
 data = st.container()
 features = st.container()
-insights = st.container()
+insight_1 = st.container()
+insight_2 = st.container()
 
 with header:
     st.title("Exercise:")
@@ -33,7 +34,7 @@ with data:
 
  
 
-with insights: 
+with insight_1: 
     df = pd.read_csv('fe_modified.csv')
     st.title('Insights')
     st.text('Looking through the Data we got some intersting Insights:')
@@ -50,3 +51,7 @@ with insights:
     #plt.title(f'Mean congestion per month', fontsize=16)
     plt.xlabel('Month-number', fontsize=16)
     plt.ylabel('Congestion', fontsize=16)
+
+with insight_2:
+    df = pd.read_csv('fe_modified.csv')
+    
