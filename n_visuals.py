@@ -35,8 +35,16 @@ df1 = df.groupby(['month'], as_index=False)['congestion'].mean()
 
 fig = px.bar(df1, df1['month'],df1['congestion'], color='month', title='Mean congestion per month')
 fig.update(layout_yaxis_range=[45,50])
-#plt.title(f'Mean congestion per month', fontsize=16)
-plt.xlabel('Month-number', fontsize=16)
-plt.ylabel('Congestion', fontsize=16)
 
 st.plotly_chart(fig)
+
+## traffic congestion 
+df2 = df.groupby(['is_weekday'], as_index=False)['congestion'].mean()
+fig = px.bar(df2, x=['weekday','weekend'], y=df2['congestion'], color = 'is_weekday',title='Mean congestion over weekdays and weekends' )
+fig.update(layout_yaxis_range=[45,50])
+
+
+st.plotly_chart(fig)
+
+## 
+
