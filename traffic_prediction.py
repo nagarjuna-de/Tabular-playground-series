@@ -28,7 +28,7 @@ with header:
 
 with data:
     st.title("Our Dataset after classification:")
-    data = pd.read_csv('data/train.csv')
+    data = pd.read_csv('fe_modified.csv')
     st.write(data.head(10))
 
  
