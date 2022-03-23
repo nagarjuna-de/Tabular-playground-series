@@ -29,7 +29,7 @@ with header:
 with data:
     st.title("Our Dataset after Feature Engineering:")
     df = pd.read_csv('fe_modified.csv')
-    df = df.reindex(columns=['time','year','month','date','hour','minute','is_weekday','m_a_e_n','direction',
+    df = df.reindex(columns=['time','year','month','date','hour','minute','week_num','is_weekday','m_a_e_n','direction',
                             'road_coord','highway_code','congestion'])
     if st.button('Show data'):
         st.dataframe(df.head(300))
@@ -41,6 +41,9 @@ with data:
     st.write('12-16--afternoon')
     st.write('17-21--evening')
     st.write('22-04--night')
+    st.write('day in the week')
+    st.write('Mon-0,Tue-1...sun-6')
+    st.subheader('Traffic Congestion is represented as congestion')
 
  
 
@@ -62,6 +65,7 @@ with insight_1:
 
     fig = px.bar(df1, df1['month'],df1['congestion'], color='month', title='Mean congestion per month')
     fig.update(layout_yaxis_range=[45,50])
+    #fig.update_layout(yaxis_title="Traffic Congestion(mean)")
 
     st.plotly_chart(fig)
     st.subheader('It seems the traffic congestion is much more the same in all months')
@@ -71,21 +75,36 @@ with insight_1:
     df2 = df.groupby(['is_weekday'], as_index=False)['congestion'].mean()
     fig = px.bar(df2, x=['weekday','weekend'], y=df2['congestion'], color = 'is_weekday',title='Mean congestion over weekdays and weekends' )
     fig.update(layout_yaxis_range=[45,50])
+    fig.update_layout(yaxis_title="Congestion(mean)")
+
+
+    st.plotly_chart(fig)
+    st.subheader('It seems there was less traffic congestion on monday, sunday and saturday')
+
+###########################
+    st.subheader("4.To check wether days in the week have any effect on traffic congestion")
+    ## traffic congestion 
+    df7 = df.groupby(['week_num'], as_index=False)['congestion'].mean()
+    fig = px.bar(df7, x=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], y=df7['congestion'], color = 'week_num',title='Mean congestion over day in the week' )
+    fig.update(layout_yaxis_range=[35,50])
+    fig.update_layout(xaxis_title="day in the week", yaxis_title="Traffic Congestion(mean)")
 
 
     st.plotly_chart(fig)
     st.subheader('It seems the traffic congestion in weekends is bit lower.')
+
+
 ##############################################
     ## traffic congestion over hour
-    st.subheader('4.To find is there any Rush hours')
+    st.subheader('5.To find is there any Rush hours')
     df3 = df.groupby(['hour'], as_index=False)['congestion'].mean()
     fig = px.line(df, df3.hour, df3['congestion'], title='Patren of traffic congestion by every hour')
     fig.update_layout(xaxis_title="Hours(0-24)", yaxis_title="Congestion(mean)")
     st.plotly_chart(fig)
-    st.subheader('There was a peak during 12-17 hours.')
+    st.subheader('There was a peak during 12-19 hours.')
 
 #########################################################33
-    st.subheader("5.To check  traffic congestion during day")
+    st.subheader("6.To check  traffic congestion during day")
     ## traffic congestion 
     df3 = df.groupby(['m_a_e_n'], as_index=False)['congestion'].mean()
     fig = px.bar(df3, x=['morning','afternoon','evening','night'], y=df3['congestion'], color = 'm_a_e_n',title='Traffic Congestion for throughout the day' )
@@ -95,12 +114,15 @@ with insight_1:
     st.plotly_chart(fig)
     st.subheader('It seems the traffic congestion during morning(05-11 hours) and night(22-04 hours) is bit low')
 #####################################################
-    st.subheader('6.To check directions have any impact on Traffic congestion')
+    st.subheader('7.To check directions have any impact on Traffic congestion')
     fig = plt.figure(figsize=(10, 4))
 
     sns.barplot(x='direction',y='congestion', data=df)
     plt.title('Impact of Roadway direction on congestion')
     st.pyplot(fig)
     st.subheader("The more traffic is in EB, NB, SB, WB")
+
+    st.subheader('Future task')
+    st.write('Giving the user the best timings or hours to travel in that highway(0-64)')
     
 
